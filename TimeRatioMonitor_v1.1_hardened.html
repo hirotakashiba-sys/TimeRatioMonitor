@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ラップタイム比較 | Time Ratio Monitor</title>
+<style>
+:root{--bg:#090b0d;--panel:#12161a;--panel2:#191e23;--line:#303840;--text:#f3f6f8;--muted:#9ba7b1;--red:#ff3b30;--green:#9cff38;--amber:#ffb020;--orange:#ff8a2a;--neutral:#b8c2cc;--focus:#5cc8ff;--shadow:0 12px 30px #0008}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% -10%,#3a1010 0,transparent 28%),linear-gradient(135deg,#07090b,#11161a);color:var(--text);font-family:Inter,"Noto Sans JP",system-ui,sans-serif;min-height:100vh}.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-variant-numeric:tabular-nums}button,input{font:inherit}button{min-height:44px;border:1px solid var(--line);border-radius:8px;background:#242b31;color:var(--text);padding:.62rem .9rem;font-weight:700;cursor:pointer;transition:.16s}button:hover{filter:brightness(1.18);transform:translateY(-1px)}button:active{transform:none}button:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}.danger{background:#3a1517;border-color:#7d2929}.primary{background:#8b1717;border-color:#e3423d}.app{width:min(1420px,100%);margin:auto;padding:20px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.brand{display:flex;align-items:center;gap:12px}.lamp{width:14px;height:14px;border-radius:50%;background:var(--green);box-shadow:0 0 14px var(--green)}h1{margin:0;font-size:clamp(1.25rem,3vw,2rem);letter-spacing:.05em}.sub{color:var(--muted);font-size:.82rem;margin-top:3px}.panel{background:linear-gradient(180deg,#171c20,#101417);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#1b2227;border-bottom:1px solid var(--line)}.panel-head h2{font-size:1rem;letter-spacing:.08em;margin:0}.panel-body{padding:16px}.input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.virtual-top-control{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#0d1114}.virtual-top-control label{margin:0}.virtual-top-control select{min-height:44px;background:#080b0d;color:var(--text);border:1px solid #414b53;border-radius:8px;padding:8px 12px;font-weight:800}.virtual-top-preview{color:var(--amber);font-weight:800}.field label{display:block;color:#c7d0d7;font-size:.82rem;font-weight:800;margin:0 0 7px}.input-row{display:flex;gap:8px}.time-input,.name-input{width:100%;min-width:0;background:#080b0d;border:1px solid #414b53;border-radius:8px;color:#fff;padding:11px 13px}.time-input{font:700 clamp(1.08rem,3vw,1.45rem)/1.2 "SFMono-Regular",Consolas,monospace;letter-spacing:.03em}.time-input.top{color:var(--amber)}.time-input.self{color:#fff}.time-input.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}.error{min-height:1.3em;color:#ff827a;font-size:.82rem;margin-top:6px}.dashboard{display:grid;grid-template-columns:280px 1fr;gap:16px}.gauge{display:grid;place-items:center;min-height:190px;background:radial-gradient(circle,#20282e 0 43%,#0b0e10 44%);border:1px solid var(--line);border-radius:12px;text-align:center}.gauge-value{font:900 2.35rem/1 "SFMono-Regular",Consolas,monospace;font-variant-numeric:tabular-nums}.gauge-label{color:var(--muted);font-size:.78rem;margin-top:9px}.selectors{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.check{display:flex;align-items:center;gap:7px;background:#0d1114;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-weight:750}.check input{width:18px;height:18px;accent-color:var(--green)}.table-wrap{overflow:auto;margin-top:13px}.pace-table{width:100%;border-collapse:collapse;min-width:710px}.pace-table th,.pace-table td{text-align:left;padding:11px 12px;border-bottom:1px solid #2c343a}.pace-table th{color:#9eabb5;font-size:.75rem;letter-spacing:.07em;background:#111619;position:sticky;top:0}.pace-table td{font-variant-numeric:tabular-nums}.percent-cell{font-weight:900}.status-badge{display:inline-flex;align-items:center;gap:7px;font-weight:850}.status-badge:before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}.faster{color:var(--green)}.slower{color:var(--orange)}.equal{color:var(--neutral)}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed #35404a;border-radius:10px}.toolbar{display:flex;flex-wrap:wrap;gap:9px}.sector{border:1px solid #353e45;border-radius:12px;background:#101519;margin-top:14px;overflow:hidden}.sector-head{display:grid;grid-template-columns:minmax(160px,1fr) auto;gap:12px;align-items:center;padding:11px 13px;background:#1b2227}.sector-title{font-weight:900}.sector-body{padding:14px}.sector-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px}.mini-stats{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.stat{background:#090d0f;border:1px solid var(--line);border-radius:9px;padding:9px 12px}.stat span{display:block;color:var(--muted);font-size:.72rem}.stat strong{display:block;margin-top:4px;font-size:1.08rem}.footer{color:#727f89;text-align:center;font-size:.75rem;padding:10px}.confirm-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:#000b}.confirm-overlay[hidden]{display:none}.confirm-dialog{width:min(460px,100%);padding:20px;border:1px solid #5a646d;border-radius:14px;background:#171c20;box-shadow:0 20px 60px #000}.confirm-dialog h2{margin:0 0 10px;font-size:1.15rem}.confirm-dialog p{margin:0 0 18px;color:#d1d8dd;line-height:1.7}.confirm-actions{display:flex;justify-content:flex-end;gap:10px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:850px){.dashboard{grid-template-columns:1fr}.gauge{min-height:150px}.input-grid,.sector-metrics{grid-template-columns:1fr}}@media(max-width:620px){.app{padding:10px}.topbar{align-items:flex-start;flex-direction:column}.topbar>.toolbar{width:100%}.topbar button{flex:1}.panel-body{padding:12px}.pace-table{min-width:0}.pace-table thead{display:none}.pace-table,.pace-table tbody,.pace-table tr,.pace-table td{display:block;width:100%}.pace-table tr{padding:10px;margin-bottom:10px;background:#0b0f12;border:1px solid #374048;border-radius:10px}.pace-table td{display:grid;grid-template-columns:125px 1fr;gap:8px;border:0;padding:5px 7px}.pace-table td:before{content:attr(data-label);color:var(--muted);font-size:.75rem;font-family:system-ui}.input-row{align-items:stretch}.input-row button{padding-inline:.7rem}.sector-head{grid-template-columns:1fr}.sector-head button{width:100%}}
+.tab-nav{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}.tab-button[aria-selected='true']{background:#8b1717;border-color:#e3423d}.tab-panel[hidden]{display:none}.run-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}.run-info-grid .full{grid-column:1/-1}.name-input.textarea{min-height:76px;resize:vertical}.history-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.status-line{margin-top:10px;color:var(--muted)}.status-line.dirty{color:var(--amber)}.chart-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:12px}.chart-box{min-height:360px;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#090d0f;padding:8px}.chart-box svg{display:block;min-width:720px;width:100%;height:360px}.chart-grid{stroke:#303840;stroke-width:1}.chart-axis{stroke:#9ba7b1;stroke-width:1.5}.chart-label{fill:#aeb9c2;font:12px system-ui}.chart-reference{stroke:#ffb020;stroke-width:1.2;stroke-dasharray:6 5}.chart-line{fill:none;stroke-width:2}.chart-point{stroke:#101417;stroke-width:2;cursor:pointer}.chart-point:focus{outline:none;stroke:var(--focus);stroke-width:4}.chart-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.legend-item{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem}.legend-swatch{width:12px;height:12px;border-radius:50%}.input-hint{margin-top:6px;color:var(--muted);font-size:.78rem}.input-hint.warning{color:var(--amber)}.history-table{width:100%;border-collapse:collapse;min-width:920px}.history-table th,.history-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}.history-table th{color:var(--muted);font-size:.78rem}.small-button{min-height:36px;padding:.35rem .65rem}.file-input{max-width:100%;padding:10px;background:#090d0f;border:1px solid var(--line);border-radius:8px}.data-card{padding:14px;border:1px solid var(--line);border-radius:10px;background:#0d1114;margin-bottom:12px}@media(max-width:850px){.run-info-grid{grid-template-columns:1fr}.run-info-grid .full{grid-column:auto}}.help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.help-card{padding:16px;border:1px solid var(--line);border-radius:10px;background:#0d1114}.help-card h3{margin:0 0 10px;color:var(--amber)}.help-card p,.help-card li{color:#d5dce1;line-height:1.75}.help-card pre{overflow:auto;margin:10px 0 0;padding:12px;border:1px solid #35404a;border-radius:8px;background:#070a0c;color:#e9eef2;font-family:Consolas,monospace;white-space:pre-wrap}.help-card.full{grid-column:1/-1}.version-badge{display:inline-flex;align-items:center;padding:6px 10px;border:1px solid var(--amber);border-radius:999px;color:var(--amber);font-weight:900}.help-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}@media(max-width:850px){.help-grid{grid-template-columns:1fr}.help-card.full{grid-column:auto}}</style>
+</head>
+<body>
+<main class="app">
+<header class="topbar"><div class="brand"><span class="lamp" aria-hidden="true"></span><div><h1>Time Ratio Monitor</h1><div class="sub">LAP / SECTOR PERFORMANCE COMPARATOR</div></div></div><div class="toolbar"><button id="addSectorButton" class="primary" aria-label="セクションを追加">＋ セクター追加</button><button id="clearAllButton" class="danger" aria-label="すべての入力とセクションを初期化">全項目クリア</button><button id="helpButton" aria-label="ヘルプを表示">？ ヘルプ</button></div></header>
+<nav class="tab-nav" aria-label="画面切替">
+<button class="tab-button" data-tab="compare" aria-selected="true">タイム比較</button>
+<button class="tab-button" data-tab="history" aria-selected="false">履歴・グラフ</button>
+<button class="tab-button" data-tab="data" aria-selected="false">データ管理</button>
+<button class="tab-button" data-tab="help" aria-selected="false">ヘルプ</button>
+</nav>
+<div id="comparePanel" class="tab-panel" data-tab-panel="compare">
+<section class="panel" aria-labelledby="mainInputTitle"><div class="panel-head"><h2 id="mainInputTitle">MAIN LAP INPUT</h2><span class="sub">整数ミリ秒演算</span></div><div class="panel-body"><div class="run-info-grid">
+<div class="field"><label for="drivingDate">走行日</label><input id="drivingDate" class="name-input" type="date"></div>
+<div class="field"><label for="drivingLocation">走行場所</label><input id="drivingLocation" class="name-input" type="text" list="locationSuggestions" placeholder="例：トミンモーターランド"><datalist id="locationSuggestions"></datalist></div>
+<div class="field full"><label for="runNote">メモ（任意）</label><textarea id="runNote" class="name-input textarea" placeholder="天候、路面、タイヤ、車両仕様など"></textarea></div>
+</div><div class="input-grid">
+<div class="field"><label for="topTime">目標タイム（TOPタイム）</label><div class="input-row"><input id="topTime" class="time-input top" type="text" inputmode="decimal" autocomplete="off" placeholder="例: 1'30.123 / 90123" aria-describedby="topError"><button data-clear="topTime" aria-label="TOPタイムをクリア">クリア</button></div><div id="topError" class="error" role="alert"></div><div id="topHint" class="input-hint">1～3桁はミリ秒として解釈します。90秒は90.000と入力してください。</div></div>
+<div class="field"><label for="selfTime">自己タイム</label><div class="input-row"><input id="selfTime" class="time-input self" type="text" inputmode="decimal" autocomplete="off" placeholder="例: 1:33.500 / 93500" aria-describedby="selfError"><button data-clear="selfTime" aria-label="自己タイムをクリア">クリア</button></div><div id="selfError" class="error" role="alert"></div><div id="selfHint" class="input-hint">1～3桁はミリ秒として解釈します。90秒は90.000と入力してください。</div></div>
+<div class="virtual-top-control"><label class="check" for="virtualTopMode"><input id="virtualTopMode" type="checkbox">仮想TOPタイムを使用</label><label for="virtualTopRatio">速めるタイム比</label><select id="virtualTopRatio" aria-label="仮想TOPタイムを速める比率" disabled></select><span id="virtualTopPreview" class="virtual-top-preview mono" aria-live="polite">実TOPタイムを基準に使用</span></div>
+</div></div></section>
+<section class="panel" aria-labelledby="mainResultTitle"><div class="panel-head"><h2 id="mainResultTitle">LAP ANALYSIS</h2><span id="mainStatus" class="sub" aria-live="polite">入力待ち</span></div><div class="panel-body"><div class="dashboard"><div class="gauge" aria-label="自己タイム百分率"><div><div id="mainPercent" class="gauge-value mono">--.--%</div><div class="gauge-label">TOP = 100.00%</div></div></div><div><div class="selectors" id="percentageSelectors"><span class="check" aria-label="100パーセントは常時表示">100% 固定</span></div><div class="toolbar" style="margin-top:9px"><button id="selectAllButton" aria-label="百分率をすべて選択">すべて選択</button><button id="deselectAllButton" aria-label="百分率をすべて解除">すべて解除</button></div></div></div><div id="mainResults" aria-live="polite"></div></div></section>
+<section class="panel" aria-labelledby="sectorTitle"><div class="panel-head"><h2 id="sectorTitle">SECTOR ANALYSIS</h2><span id="sectorCount" class="sub">0 SECTORS</span></div><div class="panel-body"><div id="sectorsContainer"><div class="empty">「セクター追加」から任意のセクターを登録できます。</div></div><div class="history-actions"><button id="registerRunButton" class="primary">走行データを履歴へ登録</button><span id="registerStatus" class="status-line" role="status"></span></div></div></section>
+</div>
+<section id="historyPanel" class="tab-panel" data-tab-panel="history" hidden>
+ <div class="panel"><div class="panel-head"><h2>HISTORY / TREND GRAPH</h2><span id="historyCount" class="sub">0 RECORDS</span></div><div class="panel-body">
+  <div class="chart-controls"><div class="field"><label for="locationFilter">走行場所</label><select id="locationFilter" class="name-input"><option value="">すべての場所</option></select></div><div class="field"><label for="metricMode">表示指標</label><select id="metricMode" class="name-input"><option value="effective">有効TOP比率</option><option value="actual">実TOP比率</option></select></div></div>
+  <div id="lineChart" class="chart-box" aria-label="走行日ごとのパーセンテージ推移グラフ"></div>
+  <div id="chartLegend" class="chart-legend" aria-label="走行場所の凡例"></div><div id="chartDetail" class="status-line">グラフ上のポイントを選択すると詳細を表示します。Tabキーでもポイントを選択できます。</div>
+  <div class="table-wrap"><table class="history-table"><thead><tr><th>走行日</th><th>走行場所</th><th>自己タイム</th><th>実TOP比</th><th>有効TOP比</th><th>操作</th></tr></thead><tbody id="historyTableBody"></tbody></table></div>
+ </div></div>
+</section>
+<section id="dataPanel" class="tab-panel" data-tab-panel="data" hidden>
+ <div class="panel"><div class="panel-head"><h2>JSON DATA MANAGEMENT</h2><span id="dataStatus" class="sub">0 RECORDS</span></div><div class="panel-body">
+  <div class="data-card"><h3>JSON保存</h3><p>現在の走行履歴をJSONファイルへ保存します。</p><button id="exportJsonButton" class="primary">JSON保存</button></div>
+  <div class="data-card"><h3>JSON読み込み</h3><div class="field"><label for="importMode">読み込み方法</label><select id="importMode" class="name-input"><option value="append">現在データへ追加</option><option value="replace">現在データを置換</option></select></div><div class="field" style="margin-top:10px"><label for="importJsonInput">JSONファイル</label><input id="importJsonInput" class="file-input" type="file" accept="application/json,.json"></div><button id="importJsonButton" style="margin-top:10px">JSON読み込み</button><div id="importStatus" class="status-line" role="status"></div></div>
+  <div class="data-card"><h3>ブラウザ内データ</h3><p id="storageStatus">このブラウザ内に自動保存します。</p><button id="clearHistoryButton" class="danger">全履歴削除</button></div>
+  <div class="data-card"><h3>README</h3><p>アプリ概要、入力形式、計算仕様、履歴／JSON操作をテキストファイルで保存します。</p><button id="downloadReadmeButton">README保存</button></div>
+ </div></div>
+</section>
+<section id="helpPanel" class="tab-panel" data-tab-panel="help" hidden>
+ <div class="panel"><div class="panel-head"><h2>HELP / README</h2><span class="version-badge">Version 1.0</span></div><div class="panel-body">
+  <div class="help-grid">
+   <article class="help-card full"><h3>アプリ概要</h3><p>Time Ratio Monitorは、TOPタイムを100%として自己タイムを比較し、セクター分析、仮想TOP評価、走行履歴、推移グラフ、JSONバックアップを1つのHTMLで管理するオフラインツールです。</p><div class="help-actions"><button id="helpDownloadReadmeButton" class="primary">README保存</button><button id="helpBackButton">タイム比較へ戻る</button></div></article>
+   <article class="help-card"><h3>1. 基本操作</h3><ol><li>走行日と走行場所を入力します。</li><li>目標タイムと自己タイムを入力します。</li><li>必要に応じて仮想TOPと表示百分率を設定します。</li><li>セクションを追加し、各タイムを入力します。</li><li>「走行データを履歴へ登録」を押します。</li></ol></article>
+   <article class="help-card"><h3>2. タイム入力形式</h3><pre>1～3桁 : ミリ秒
+1       → 0'00.001
+12      → 0'00.012
+123     → 0'00.123
+4桁    : Smmm
+1234    → 0'01.234
+5桁    : SSmmm
+90123   → 1'30.123
+6桁    : MSSmmm
+130123  → 1'30.123
+7桁    : MMSSmmm
+1030123 → 10'30.123
+
+通常形式
+90.123 / 1'30.123 / 1:30.123</pre></article>
+   <article class="help-card"><h3>3. 百分率とタイム差</h3><pre>自己タイム百分率
+= 自己タイム ÷ 有効TOPタイム × 100
+
+タイム差
+= 自己タイム − 各基準タイム</pre><p>タイム差がマイナスなら基準より速く緑色、プラスなら遅く橙色、同タイムならニュートラル色で表示します。</p></article>
+   <article class="help-card"><h3>4. 仮想TOPタイム</h3><pre>仮想TOPタイム
+= 入力TOP × (100 − 比率) ÷ 100</pre><p>0～10%を1%刻みで選択できます。仮想TOPを使用すると、メインと各セクターのすべての基準タイムに同じ比率を適用します。</p></article>
+   <article class="help-card"><h3>5. セクター管理</h3><p>自動名はSector 1、Sector 2の順に採番され、削除後も連番へ戻ります。セクター名を利用者が編集した場合、その名称を優先して保持します。空欄にしてフォーカスを外すと自動名へ戻ります。</p></article>
+   <article class="help-card"><h3>6. 履歴とグラフ</h3><p>履歴登録後、「履歴・グラフ」タブで走行日を横軸、百分率を縦軸として確認できます。同じ走行場所のポイントだけを線で結びます。走行場所フィルターと、実TOP比率／有効TOP比率の切替を利用できます。</p></article>
+   <article class="help-card"><h3>7. JSON保存・読み込み</h3><p>データ管理タブの「JSON保存」で全履歴をバックアップできます。読み込みは「追加」または「置換」を選択します。履歴はブラウザ内にも自動保存されますが、移行やバックアップにはJSON保存を使用してください。</p></article>
+   <article class="help-card"><h3>8. 履歴の復元・削除</h3><p>履歴一覧の「復元」で登録時のTOP、自己タイム、仮想TOP設定、表示百分率、セクター情報をタイム比較画面へ戻せます。「削除」は対象履歴だけを削除し、「全履歴削除」はブラウザ内の履歴をすべて削除します。</p></article>
+   <article class="help-card"><h3>9. 色の意味</h3><ul><li><strong class="faster">緑</strong>：基準タイムより速い</li><li><strong class="slower">橙</strong>：基準タイムより遅い</li><li><strong class="equal">白／グレー</strong>：同タイム</li><li><strong style="color:var(--amber)">アンバー</strong>：TOPまたは仮想TOP関連</li></ul></article>
+   <article class="help-card full"><h3>10. 更新履歴</h3><ul><li>Version 1.0：Time Ratio Monitor 公開</li></ul></article>
+  </div>
+ </div></div>
+</section>
+<footer class="footer">OFFLINE STANDALONE TOOL / NO EXTERNAL LIBRARIES</footer>
+</main>
+<div id="confirmOverlay" class="confirm-overlay" hidden>
+ <section class="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+  <h2 id="confirmTitle">確認</h2>
+  <p id="confirmMessage"></p>
+  <div class="confirm-actions"><button id="confirmCancelButton" type="button">キャンセル</button><button id="confirmOkButton" type="button" class="danger">実行</button></div>
+ </section>
+</div>
+<script>
+'use strict';
+const OPTIONAL_PERCENTAGES=[105,110,115,120,125,130];
+const topTimeInput=document.getElementById('topTime');
+const selfTimeInput=document.getElementById('selfTime');
+const mainResults=document.getElementById('mainResults');
+const sectorsContainer=document.getElementById('sectorsContainer');
+const virtualTopMode=document.getElementById('virtualTopMode');
+const virtualTopRatio=document.getElementById('virtualTopRatio');
+const virtualTopPreview=document.getElementById('virtualTopPreview');
+const confirmOverlay=document.getElementById('confirmOverlay');
+const confirmMessage=document.getElementById('confirmMessage');
+const confirmOkButton=document.getElementById('confirmOkButton');
+const confirmCancelButton=document.getElementById('confirmCancelButton');
+const drivingDate=document.getElementById('drivingDate');
+const drivingLocation=document.getElementById('drivingLocation');
+const runNote=document.getElementById('runNote');
+const registerStatus=document.getElementById('registerStatus');
+const historyTableBody=document.getElementById('historyTableBody');
+const lineChart=document.getElementById('lineChart');
+const chartDetail=document.getElementById('chartDetail');
+const locationFilter=document.getElementById('locationFilter');
+const metricMode=document.getElementById('metricMode');
+const importJsonInput=document.getElementById('importJsonInput');
+const importMode=document.getElementById('importMode');
+const importStatus=document.getElementById('importStatus');
+const STORAGE_KEY='TimeRatioMonitor.history.v1';
+const APP_VERSION='1.0';
+let runHistory=[];
+let historyDirty=false;
+let sectorSequence=0;
+let confirmationResolver=null;
+function requestConfirmation(message){
+ if(confirmationResolver){confirmationResolver(false);confirmationResolver=null;}
+ confirmMessage.textContent=message;
+ confirmOverlay.hidden=false;
+ document.body.style.overflow='hidden';
+ confirmCancelButton.focus();
+ return new Promise(resolve=>{confirmationResolver=resolve;});
+}
+function closeConfirmation(result){
+ if(!confirmationResolver)return;
+ const resolve=confirmationResolver;
+ confirmationResolver=null;
+ confirmOverlay.hidden=true;
+ document.body.style.overflow='';
+ resolve(result);
+}
+confirmOkButton.addEventListener('click',()=>closeConfirmation(true));
+confirmCancelButton.addEventListener('click',()=>closeConfirmation(false));
+confirmOverlay.addEventListener('click',event=>{if(event.target===confirmOverlay)closeConfirmation(false);});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!confirmOverlay.hidden)closeConfirmation(false);});
+
+// 入力を整数ミリ秒へ変換する。
+// 1～3桁はミリ秒、4桁はSmmm、5桁はSSmmm、6桁はMSSmmm、7桁はMMSSmmmとして扱う。 
+function parseTimeToMilliseconds(rawValue){
+ const value=rawValue.trim();
+ if(!value)return {valid:false,empty:true,message:'入力してください。'};
+ if(!/^[0-9.':]+$/.test(value))return {valid:false,message:'数字、小数点、アポストロフィー、コロンのみ使用できます。'};
+ let milliseconds;
+ if(/^\d{1,3}$/.test(value)){milliseconds=Number(value);}
+ else if(/^\d{4}$/.test(value)){const seconds=Number(value.slice(0,1));const millis=Number(value.slice(1,4));milliseconds=seconds*1000+millis;}
+ else if(/^\d{5}$/.test(value)){
+  const seconds=Number(value.slice(0,2));
+  const millis=Number(value.slice(2,5));
+  milliseconds=seconds*1000+millis;
+ }
+ else if(/^\d{6}$/.test(value)){
+  const minutes=Number(value.slice(0,1));
+  const seconds=Number(value.slice(1,3));
+  const millis=Number(value.slice(3,6));
+  if(seconds>=60)return {valid:false,message:'6桁形式では秒は00～59で入力してください。'};
+  milliseconds=(minutes*60+seconds)*1000+millis;
+ }
+ else if(/^\d{7}$/.test(value)){
+  const minutes=Number(value.slice(0,2));
+  const seconds=Number(value.slice(2,4));
+  const millis=Number(value.slice(4,7));
+  if(seconds>=60)return {valid:false,message:'7桁形式では秒は00～59で入力してください。'};
+  milliseconds=(minutes*60+seconds)*1000+millis;
+ }
+ else if(/^\d+(?:\.\d{1,3})?$/.test(value)){
+  const [whole,fraction='']=value.split('.'); milliseconds=Number(whole)*1000+Number(fraction.padEnd(3,'0'));
+ }else{
+  const match=value.match(/^(\d+)[':](\d{1,2})(?:\.(\d{1,3}))?$/);
+  if(!match)return {valid:false,message:"形式が不完全です。例: 90.123 / 1'30.123 / 90123"};
+  const minutes=Number(match[1]),seconds=Number(match[2]),fraction=(match[3]||'').padEnd(3,'0');
+  if(seconds>=60)return {valid:false,message:'秒は0以上59以下で入力してください。'};
+  milliseconds=(minutes*60+seconds)*1000+Number(fraction);
+ }
+ if(!Number.isSafeInteger(milliseconds)||milliseconds<=0)return {valid:false,message:'0秒より大きいタイムを入力してください。'};
+ return {valid:true,milliseconds};
+}
+function formatMilliseconds(ms){const safe=Math.max(0,Math.round(ms));const minutes=Math.floor(safe/60000);const seconds=Math.floor((safe%60000)/1000);const milli=safe%1000;return `${minutes}'${String(seconds).padStart(2,'0')}.${String(milli).padStart(3,'0')}`;}
+function formatDifference(diff){if(diff===0)return `±${formatMilliseconds(0)}`;return `${diff>0?'+':'-'}${formatMilliseconds(Math.abs(diff))}`;}
+function calculateReferenceTime(topMs,percentage){return Math.floor((topMs*percentage+50)/100);}
+// 選択比率だけ入力TOPより速い仮想TOPを1ms単位で四捨五入する。
+function calculateVirtualTopTime(topMs){if(!virtualTopMode.checked)return topMs;const ratio=Number(virtualTopRatio.value);return Math.floor((topMs*(100-ratio)+50)/100);}
+function updateVirtualTopPreview(parsedTop){virtualTopRatio.disabled=!virtualTopMode.checked;if(!virtualTopMode.checked){virtualTopPreview.textContent='実TOPタイムを基準に使用';return;}if(!parsedTop||!parsedTop.valid){virtualTopPreview.textContent=`仮想TOP: 入力待ち（${virtualTopRatio.value}%速い）`;return;}virtualTopPreview.textContent=`仮想TOP: ${formatMilliseconds(calculateVirtualTopTime(parsedTop.milliseconds))}（${virtualTopRatio.value}%速い）`;}
+function getComparison(diff){if(diff<0)return {word:'速い',className:'faster',detail:`${(Math.abs(diff)/1000).toFixed(3)}秒速い`};if(diff>0)return {word:'遅い',className:'slower',detail:`${(diff/1000).toFixed(3)}秒遅い`};return {word:'同タイム',className:'equal',detail:'同タイム'};}
+function getSelectedPercentages(){return [100,...OPTIONAL_PERCENTAGES.filter(p=>document.getElementById(`percent-${p}`).checked)];}
+function createResultsTable(topMs,selfMs){
+ const table=document.createElement('table');table.className='pace-table';
+ const head=document.createElement('thead');const hr=document.createElement('tr');['百分率','基準タイム','自己との差'].forEach(text=>{const th=document.createElement('th');th.textContent=text;hr.appendChild(th)});head.appendChild(hr);table.appendChild(head);
+ const body=document.createElement('tbody');
+ getSelectedPercentages().forEach(percentage=>{const reference=calculateReferenceTime(topMs,percentage);const diff=selfMs-reference;const state=getComparison(diff);const row=document.createElement('tr');const values=[`${percentage}%`,formatMilliseconds(reference),formatDifference(diff)];values.forEach((value,index)=>{const td=document.createElement('td');td.dataset.label=['百分率','基準タイム','自己との差'][index];td.textContent=value;if(index===0)td.className='percent-cell mono';if(index===1)td.classList.add('mono');if(index===2)td.className=`mono ${state.className}`;row.appendChild(td)});body.appendChild(row)});table.appendChild(body);
+ const wrap=document.createElement('div');wrap.className='table-wrap';wrap.appendChild(table);return wrap;
+}
+function validateInput(input,errorElement,showError){const parsed=parseTimeToMilliseconds(input.value);input.classList.toggle('invalid',showError&&!parsed.valid);errorElement.textContent=showError&&!parsed.valid?parsed.message:'';input.setAttribute('aria-invalid',String(showError&&!parsed.valid));return parsed;}
+function normalizeInput(input,errorElement){const parsed=validateInput(input,errorElement,true);if(parsed.valid)input.value=formatMilliseconds(parsed.milliseconds);return parsed;}
+function updateMainResults(showErrors=false){
+ const top=validateInput(topTimeInput,document.getElementById('topError'),showErrors&&topTimeInput.value.trim()!=='');updateVirtualTopPreview(top);const self=validateInput(selfTimeInput,document.getElementById('selfError'),showErrors&&selfTimeInput.value.trim()!=='');mainResults.replaceChildren();
+ if(!top.valid||!self.valid){document.getElementById('mainPercent').textContent='--.--%';document.getElementById('mainPercent').className='gauge-value mono';document.getElementById('mainStatus').textContent=top.empty&&self.empty?'入力待ち':'有効なTOPタイムと自己タイムを入力してください';const empty=document.createElement('div');empty.className='empty';empty.textContent='2つの有効なタイムが揃うと計算結果を表示します。';mainResults.appendChild(empty);return;}
+ const effectiveTop=calculateVirtualTopTime(top.milliseconds);const percent=self.milliseconds/effectiveTop*100;const diff=self.milliseconds-effectiveTop;const state=getComparison(diff);const value=document.getElementById('mainPercent');value.textContent=`${percent.toFixed(2)}%`;value.className=`gauge-value mono ${state.className}`;document.getElementById('mainStatus').textContent=`${virtualTopMode.checked?'仮想TOP':'実TOP'}比 ${percent.toFixed(2)}%`;mainResults.appendChild(createResultsTable(effectiveTop,self.milliseconds));
+}
+function createStat(label,value,className=''){const stat=document.createElement('div');stat.className='stat';const span=document.createElement('span');span.textContent=label;const strong=document.createElement('strong');strong.className=`mono ${className}`;strong.textContent=value;stat.append(span,strong);return stat;}
+function renumberAutoNamedSectors(){let index=1;sectorsContainer.querySelectorAll('.sector').forEach(section=>{const name=section.querySelector('.sector-title');const remove=section.querySelector('.sector-head .danger');if(name?.dataset.autoName==='true'){const autoName=`Sector ${index}`;name.value=autoName;name.setAttribute('aria-label',`${autoName} の名称`);remove?.setAttribute('aria-label',`${autoName}を削除`);}index++;});}
+function addSector(){
+ sectorSequence++;const id=`sector-${sectorSequence}`;const section=document.createElement('article');section.className='sector';section.dataset.sectorId=id;
+ const head=document.createElement('div');head.className='sector-head';const nameWrap=document.createElement('div');const nameLabel=document.createElement('label');nameLabel.htmlFor=`${id}-name`;nameLabel.className='sr-only';nameLabel.textContent='セクション名';const name=document.createElement('input');name.id=`${id}-name`;name.className='name-input sector-title';name.dataset.autoName='true';const initialName=`Sector ${sectorsContainer.querySelectorAll('.sector').length+1}`;name.value=initialName;name.setAttribute('aria-label',`${initialName} の名称`);nameWrap.append(nameLabel,name);const remove=document.createElement('button');remove.className='danger';remove.textContent='削除';remove.setAttribute('aria-label',`${name.value}を削除`);head.append(nameWrap,remove);
+ const body=document.createElement('div');body.className='sector-body';const metrics=document.createElement('div');metrics.className='sector-metrics';
+ const fields=[['top','TOPセクションタイム','例: 30.123 / 30123'],['self','自己セクションタイム','例: 31.500 / 31500']];
+ fields.forEach(([kind,labelText,placeholder])=>{const field=document.createElement('div');field.className='field';const label=document.createElement('label');label.htmlFor=`${id}-${kind}`;label.textContent=labelText;const row=document.createElement('div');row.className='input-row';const input=document.createElement('input');input.id=`${id}-${kind}`;input.className=`time-input ${kind}`;input.type='text';input.inputMode='decimal';input.autocomplete='off';input.placeholder=placeholder;input.setAttribute('aria-describedby',`${id}-${kind}-error`);const clear=document.createElement('button');clear.textContent='クリア';clear.setAttribute('aria-label',`${name.value}の${labelText}をクリア`);clear.addEventListener('click',()=>{input.value='';updateSector(section)});const error=document.createElement('div');error.id=`${id}-${kind}-error`;error.className='error';error.setAttribute('role','alert');row.append(input,clear);field.append(label,row,error);metrics.appendChild(field);input.addEventListener('input',()=>{sanitizeInput(input);updateSector(section)});input.addEventListener('blur',()=>{normalizeInput(input,error);updateSector(section,true)});});
+ const result=document.createElement('div');result.className='sector-result';body.append(metrics,result);section.append(head,body);sectorsContainer.appendChild(section);remove.addEventListener('click',async()=>{const approved=await requestConfirmation(`「${name.value.trim()||'名称未設定'}」を削除しますか？`);if(!approved)return;section.remove();if(!sectorsContainer.querySelector('.sector')){const empty=document.createElement('div');empty.className='empty';empty.textContent='「セクター追加」から任意のセクションを登録できます。';sectorsContainer.replaceChildren(empty);}renumberAutoNamedSectors();updateSectorCount();});name.addEventListener('input',()=>{name.dataset.autoName='false';remove.setAttribute('aria-label',`${name.value||'このセクション'}を削除`);});name.addEventListener('blur',()=>{if(!name.value.trim()){name.dataset.autoName='true';renumberAutoNamedSectors();}});updateSector(section);renumberAutoNamedSectors();updateSectorCount();name.focus();
+}
+function updateSector(section,showErrors=false){const id=section.dataset.sectorId;const topInput=document.getElementById(`${id}-top`),selfInput=document.getElementById(`${id}-self`);const top=validateInput(topInput,document.getElementById(`${id}-top-error`),showErrors&&topInput.value.trim()!=='');const self=validateInput(selfInput,document.getElementById(`${id}-self-error`),showErrors&&selfInput.value.trim()!=='');const result=section.querySelector('.sector-result');result.replaceChildren();if(!top.valid||!self.valid){const empty=document.createElement('div');empty.className='empty';empty.textContent='有効なTOP・自己セクションタイムを入力してください。';result.appendChild(empty);return;}const effectiveTop=calculateVirtualTopTime(top.milliseconds);const percent=self.milliseconds/effectiveTop*100;const diff=self.milliseconds-effectiveTop;const state=getComparison(diff);const stats=document.createElement('div');stats.className='mini-stats';stats.append(createStat('TOP比',`${percent.toFixed(2)}%`,state.className),createStat(virtualTopMode.checked?'仮想TOPとの差':'TOPとの差',formatDifference(diff),state.className));result.append(stats,createResultsTable(effectiveTop,self.milliseconds));}
+function updateAll(){updateMainResults();document.querySelectorAll('.sector').forEach(section=>updateSector(section));}
+function updateSectorCount(){const count=sectorsContainer.querySelectorAll('.sector').length;document.getElementById('sectorCount').textContent=`${count} SECTOR${count===1?'':'S'}`;}
+function sanitizeInput(input){const cleaned=input.value.replace(/[^0-9.':]/g,'');if(cleaned!==input.value){const pos=input.selectionStart-1;input.value=cleaned;input.setSelectionRange(Math.max(0,pos),Math.max(0,pos));}}
+function updateShortInputHint(input){const hint=document.getElementById(input.id==='topTime'?'topHint':'selfHint');if(!hint)return;const value=input.value.trim();const short=/^\d{1,3}$/.test(value)&&Number(value)>0;hint.textContent=short?`${value}を${value}ミリ秒として解釈します。${value}秒の場合は${value}.000と入力してください。`:'1～3桁はミリ秒として解釈します。90秒は90.000と入力してください。';hint.classList.toggle('warning',short);}
+for(let ratio=0;ratio<=10;ratio++){const option=document.createElement('option');option.value=String(ratio);option.textContent=`${ratio}%`;virtualTopRatio.appendChild(option);}
+virtualTopMode.addEventListener('change',updateAll);
+virtualTopRatio.addEventListener('change',updateAll);
+OPTIONAL_PERCENTAGES.forEach(p=>{const label=document.createElement('label');label.className='check';const box=document.createElement('input');box.type='checkbox';box.id=`percent-${p}`;box.checked=true;box.setAttribute('aria-label',`${p}パーセントを表示`);box.addEventListener('change',updateAll);label.append(box,document.createTextNode(`${p}%`));document.getElementById('percentageSelectors').appendChild(label)});
+[topTimeInput,selfTimeInput].forEach(input=>{input.addEventListener('input',()=>{sanitizeInput(input);updateShortInputHint(input);updateMainResults()});input.addEventListener('blur',()=>{normalizeInput(input,document.getElementById(input.id==='topTime'?'topError':'selfError'));updateMainResults(true)});});
+document.querySelectorAll('[data-clear]').forEach(button=>button.addEventListener('click',()=>{const input=document.getElementById(button.dataset.clear);input.value='';updateMainResults();input.focus()}));
+document.getElementById('selectAllButton').addEventListener('click',()=>{OPTIONAL_PERCENTAGES.forEach(p=>document.getElementById(`percent-${p}`).checked=true);updateAll()});
+document.getElementById('deselectAllButton').addEventListener('click',()=>{OPTIONAL_PERCENTAGES.forEach(p=>document.getElementById(`percent-${p}`).checked=false);updateAll()});
+document.getElementById('addSectorButton').addEventListener('click',()=>{const empty=sectorsContainer.querySelector('.empty');if(empty&&document.querySelectorAll('.sector').length===0)empty.remove();addSector()});
+document.getElementById('clearAllButton').addEventListener('click',async()=>{const approved=await requestConfirmation('メインタイム、セクション、選択状態を初期状態へ戻しますか？');if(!approved)return;topTimeInput.value='';selfTimeInput.value='';topTimeInput.classList.remove('invalid');selfTimeInput.classList.remove('invalid');topTimeInput.setAttribute('aria-invalid','false');selfTimeInput.setAttribute('aria-invalid','false');sectorSequence=0;const empty=document.createElement('div');empty.className='empty';empty.textContent='「セクター追加」から任意のセクションを登録できます。';sectorsContainer.replaceChildren(empty);virtualTopMode.checked=false;virtualTopRatio.value='0';virtualTopRatio.disabled=true;OPTIONAL_PERCENTAGES.forEach(p=>document.getElementById(`percent-${p}`).checked=true);document.getElementById('topError').textContent='';document.getElementById('selfError').textContent='';updateSectorCount();updateMainResults();topTimeInput.focus()});
+// タブ、走行履歴、SVGグラフ、JSON入出力
+function switchTab(tabName){document.querySelectorAll('.tab-button').forEach(button=>button.setAttribute('aria-selected',String(button.dataset.tab===tabName)));document.querySelectorAll('[data-tab-panel]').forEach(panel=>panel.hidden=panel.dataset.tabPanel!==tabName);if(tabName==='history')renderHistory();}
+document.querySelectorAll('.tab-button').forEach(button=>button.addEventListener('click',()=>switchTab(button.dataset.tab)));
+function makeRecordId(){return `run-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;}
+function roundPercentage(value){return Math.round(value*100)/100;}
+function getSectorSnapshot(){
+ const sectors=[];const incomplete=[];
+ [...sectorsContainer.querySelectorAll('.sector')].forEach((section,index)=>{const topInput=section.querySelector('.time-input.top');const selfInput=section.querySelector('.time-input.self');const top=parseTimeToMilliseconds(topInput.value);const self=parseTimeToMilliseconds(selfInput.value);const name=section.querySelector('.sector-title');const hasAny=topInput.value.trim()||selfInput.value.trim();if(!top.valid||!self.valid){if(hasAny)incomplete.push(name.value.trim()||`Sector ${index+1}`);return;}const effective=calculateVirtualTopTime(top.milliseconds);sectors.push({id:`sector-${index+1}`,name:name.value.trim()||`Sector ${index+1}`,nameType:name.dataset.autoName==='true'?'auto':'user',topMs:top.milliseconds,selfMs:self.milliseconds,effectiveTopMs:effective,effectiveTopPercentage:roundPercentage(self.milliseconds/effective*100)});});
+ return {sectors,incomplete};
+}
+function collectCurrentRecord(){const top=parseTimeToMilliseconds(topTimeInput.value);const self=parseTimeToMilliseconds(selfTimeInput.value);if(!drivingDate.value)return {error:'走行日を入力してください。'};if(!isRealDate(drivingDate.value))return {error:'実在する走行日を入力してください。'};if(!drivingLocation.value.trim())return {error:'走行場所を入力してください。'};if(!top.valid)return {error:'有効な目標タイムを入力してください。'};if(!self.valid)return {error:'有効な自己タイムを入力してください。'};const effectiveTop=calculateVirtualTopTime(top.milliseconds);const sectorResult=getSectorSnapshot();return {warning:sectorResult.incomplete.length?`未完成のセクターを除外しました: ${sectorResult.incomplete.join('、')}`:'',record:{id:makeRecordId(),drivingDate:drivingDate.value,location:drivingLocation.value.trim(),note:runNote.value.trim(),createdAt:new Date().toISOString(),lap:{inputTopMs:top.milliseconds,selfMs:self.milliseconds,virtualTopEnabled:virtualTopMode.checked,virtualTopRatio:Number(virtualTopRatio.value),virtualTopMs:virtualTopMode.checked?effectiveTop:null,effectiveTopMs:effectiveTop,actualTopPercentage:roundPercentage(self.milliseconds/top.milliseconds*100),effectiveTopPercentage:roundPercentage(self.milliseconds/effectiveTop*100)},percentageVisibility:Object.fromEntries(OPTIONAL_PERCENTAGES.map(p=>[String(p),document.getElementById(`percent-${p}`).checked])),sectors:sectorResult.sectors}};}
+function saveHistory(markDirty=true){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(runHistory));if(markDirty)historyDirty=true;updateHistoryStatus();return {success:true};}catch(error){updateHistoryStatus();return {success:false,message:'ブラウザ内への保存に失敗しました。JSON保存でデータを退避してください。',error};}}
+function loadHistory(){try{const raw=localStorage.getItem(STORAGE_KEY)||'[]';const data=JSON.parse(raw);runHistory=Array.isArray(data)?validateRecordArray(data,{allowEmpty:true}):[];}catch(error){runHistory=[];const status=document.getElementById('storageStatus');if(status){status.textContent='ブラウザ内データの読み込みに失敗しました。JSONから復元してください。';status.className='status-line dirty';}}updateHistoryStatus();}
+function updateHistoryStatus(){document.getElementById('historyCount').textContent=`${runHistory.length} RECORDS`;document.getElementById('dataStatus').textContent=`${runHistory.length} RECORDS`;const status=document.getElementById('storageStatus');status.textContent=historyDirty?'このブラウザ内に保存済みです。未エクスポートの履歴があります。':'このブラウザ内に保存済みです。';status.className=historyDirty?'status-line dirty':'status-line';}
+function updateLocationOptions(){const locations=[...new Set(runHistory.map(r=>r.location).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ja'));document.getElementById('locationSuggestions').replaceChildren(...locations.map(value=>{const option=document.createElement('option');option.value=value;return option;}));const current=locationFilter.value;locationFilter.replaceChildren(Object.assign(document.createElement('option'),{value:'',textContent:'すべての場所'}),...locations.map(value=>Object.assign(document.createElement('option'),{value,textContent:value})));if(locations.includes(current))locationFilter.value=current;}
+function getFilteredHistory(){return runHistory.filter(r=>!locationFilter.value||r.location===locationFilter.value).sort((a,b)=>a.drivingDate.localeCompare(b.drivingDate)||String(a.createdAt||'').localeCompare(String(b.createdAt||'')));}
+function createSvgElement(name,attrs={}){const element=document.createElementNS('http://www.w3.org/2000/svg',name);Object.entries(attrs).forEach(([key,value])=>element.setAttribute(key,String(value)));return element;}
+function colorForLocation(location,index){const colors=['#9cff38','#ffb020','#5cc8ff','#ff5e55','#b388ff','#00d4aa','#ff7edb'];let hash=0;for(const char of location)hash=(hash*31+char.codePointAt(0))>>>0;return colors[(hash+index)%colors.length];}
+function renderChart(records){lineChart.replaceChildren();const legend=document.getElementById('chartLegend');legend.replaceChildren();if(!records.length){const empty=document.createElement('div');empty.className='empty';empty.textContent='表示できる走行履歴がありません。';lineChart.appendChild(empty);return;}const metric=metricMode.value==='actual'?'actualTopPercentage':'effectiveTopPercentage';const values=records.map(r=>r.lap[metric]);const minY=Math.min(95,...values)-1,maxY=Math.max(130,...values)+1,width=Math.max(720,records.length*90),height=350,left=58,right=24,top=22,bottom=54,plotW=width-left-right,plotH=height-top-bottom;const svg=createSvgElement('svg',{viewBox:`0 0 ${width} ${height}`,role:'img','aria-label':'走行日ごとのパーセンテージ推移'});const x=(i)=>left+(records.length===1?plotW/2:i*plotW/(records.length-1));const y=(v)=>top+(maxY-v)*plotH/(maxY-minY);[100,105,110,115,120,125,130].filter(v=>v>=minY&&v<=maxY).forEach(v=>{svg.appendChild(createSvgElement('line',{x1:left,y1:y(v),x2:width-right,y2:y(v),class:v===100?'chart-reference':'chart-grid'}));const label=createSvgElement('text',{x:left-8,y:y(v)+4,'text-anchor':'end',class:'chart-label'});label.textContent=`${v}%`;svg.appendChild(label);});svg.appendChild(createSvgElement('line',{x1:left,y1:top,x2:left,y2:height-bottom,class:'chart-axis'}));svg.appendChild(createSvgElement('line',{x1:left,y1:height-bottom,x2:width-right,y2:height-bottom,class:'chart-axis'}));records.forEach((record,i)=>{const label=createSvgElement('text',{x:x(i),y:height-bottom+18,'text-anchor':'middle',class:'chart-label'});label.textContent=record.drivingDate.slice(5);svg.appendChild(label);});const groups=Map.groupBy?Map.groupBy(records,r=>r.location):records.reduce((m,r)=>m.set(r.location,[...(m.get(r.location)||[]),r]),new Map());let colorIndex=0;for(const [location,group] of groups){const color=colorForLocation(location,colorIndex++);const points=group.map(r=>({record:r,index:records.indexOf(r)}));if(points.length>1){const poly=createSvgElement('polyline',{points:points.map(p=>`${x(p.index)},${y(p.record.lap[metric])}`).join(' '),class:'chart-line',stroke:color});svg.appendChild(poly);}points.forEach(p=>{const circle=createSvgElement('circle',{cx:x(p.index),cy:y(p.record.lap[metric]),r:6,fill:color,class:'chart-point',tabindex:0,role:'button','aria-label':`${p.record.drivingDate} ${p.record.location} ${p.record.lap[metric].toFixed(2)}%`});const show=()=>{chartDetail.textContent=`${p.record.drivingDate} | ${p.record.location} | 自己 ${formatMilliseconds(p.record.lap.selfMs)} | 実TOP比 ${p.record.lap.actualTopPercentage.toFixed(2)}% | 有効TOP比 ${p.record.lap.effectiveTopPercentage.toFixed(2)}%${p.record.note?' | '+p.record.note:''}`;};circle.addEventListener('click',show);circle.addEventListener('focus',show);circle.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();show();}});svg.appendChild(circle);});const item=document.createElement('span');item.className='legend-item';const swatch=document.createElement('span');swatch.className='legend-swatch';swatch.style.background=color;item.append(swatch,document.createTextNode(location));legend.appendChild(item);}lineChart.appendChild(svg);}
+function renderHistory(){updateLocationOptions();const records=getFilteredHistory();renderChart(records);historyTableBody.replaceChildren(...records.map(record=>{const row=document.createElement('tr');[record.drivingDate,record.location,formatMilliseconds(record.lap.selfMs),`${record.lap.actualTopPercentage.toFixed(2)}%`,`${record.lap.effectiveTopPercentage.toFixed(2)}%`].forEach(text=>{const td=document.createElement('td');td.textContent=text;row.appendChild(td);});const action=document.createElement('td');const restore=document.createElement('button');restore.className='small-button';restore.textContent='復元';restore.addEventListener('click',()=>restoreRecord(record));const remove=document.createElement('button');remove.className='small-button danger';remove.textContent='削除';remove.style.marginLeft='6px';remove.addEventListener('click',async()=>{if(await requestConfirmation(`${record.drivingDate} ${record.location} の履歴を削除しますか？`)){const previous=[...runHistory];runHistory=runHistory.filter(r=>r.id!==record.id);const saved=saveHistory();if(!saved.success){runHistory=previous;chartDetail.textContent=saved.message;return;}renderHistory();}});action.append(restore,remove);row.appendChild(action);return row;}));updateHistoryStatus();}
+function restoreRecord(record){drivingDate.value=record.drivingDate;drivingLocation.value=record.location;runNote.value=record.note||'';topTimeInput.value=formatMilliseconds(record.lap.inputTopMs);selfTimeInput.value=formatMilliseconds(record.lap.selfMs);virtualTopMode.checked=Boolean(record.lap.virtualTopEnabled);virtualTopRatio.value=String(record.lap.virtualTopRatio||0);virtualTopRatio.disabled=!virtualTopMode.checked;OPTIONAL_PERCENTAGES.forEach(p=>document.getElementById(`percent-${p}`).checked=record.percentageVisibility?.[String(p)]!==false);const empty=document.createElement('div');empty.className='empty';empty.textContent='「セクター追加」から任意のセクションを登録できます。';sectorsContainer.replaceChildren(empty);sectorSequence=0;(record.sectors||[]).forEach(saved=>{document.getElementById('addSectorButton').click();const section=[...sectorsContainer.querySelectorAll('.sector')].at(-1);const name=section.querySelector('.sector-title');name.value=saved.name;name.dataset.autoName=saved.nameType==='auto'?'true':'false';section.querySelector('.time-input.top').value=formatMilliseconds(saved.topMs);section.querySelector('.time-input.self').value=formatMilliseconds(saved.selfMs);updateSector(section);});renumberAutoNamedSectors();updateSectorCount();updateMainResults();switchTab('compare');}
+document.getElementById('registerRunButton').addEventListener('click',()=>{const result=collectCurrentRecord();if(result.error){registerStatus.textContent=result.error;registerStatus.className='status-line dirty';return;}runHistory.push(result.record);const saved=saveHistory();if(!saved.success){runHistory.pop();registerStatus.textContent=saved.message;registerStatus.className='status-line dirty';return;}updateLocationOptions();registerStatus.textContent=result.warning?`走行データを登録しました。${result.warning}`:'走行データを履歴へ登録しました。';registerStatus.className=result.warning?'status-line dirty':'status-line';});
+locationFilter.addEventListener('change',renderHistory);metricMode.addEventListener('change',renderHistory);
+function isRealDate(value){if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;const [year,month,day]=value.split('-').map(Number);const date=new Date(Date.UTC(year,month-1,day));return date.getUTCFullYear()===year&&date.getUTCMonth()===month-1&&date.getUTCDate()===day;}
+function isValidIsoDateTime(value){return typeof value==='string'&&!Number.isNaN(Date.parse(value));}
+function isPositiveSafeInteger(value){return Number.isSafeInteger(value)&&value>0;}
+function validateSector(sector,index){if(!sector||typeof sector!=='object')throw new Error(`セクター${index+1}が不正です。`);if(typeof sector.id!=='string'||!sector.id.trim())throw new Error(`セクター${index+1}のIDが不正です。`);if(typeof sector.name!=='string'||!sector.name.trim())throw new Error(`セクター${index+1}の名称が不正です。`);if(!['auto','user'].includes(sector.nameType))throw new Error(`セクター${index+1}の名称種別が不正です。`);for(const key of ['topMs','selfMs','effectiveTopMs'])if(!isPositiveSafeInteger(sector[key]))throw new Error(`セクター${index+1}の${key}が不正です。`);if(!Number.isFinite(sector.effectiveTopPercentage)||sector.effectiveTopPercentage<=0)throw new Error(`セクター${index+1}の百分率が不正です。`);return {...sector};}
+function validateRecord(record,index){if(!record||typeof record!=='object')throw new Error(`履歴${index+1}が不正です。`);if(typeof record.id!=='string'||!record.id.trim())throw new Error(`履歴${index+1}のIDが不正です。`);if(!isRealDate(record.drivingDate))throw new Error(`履歴${index+1}の走行日が不正です。`);if(typeof record.location!=='string'||!record.location.trim())throw new Error(`履歴${index+1}の走行場所が不正です。`);if(record.note!=null&&typeof record.note!=='string')throw new Error(`履歴${index+1}のメモが不正です。`);if(!isValidIsoDateTime(record.createdAt))throw new Error(`履歴${index+1}の登録日時が不正です。`);const lap=record.lap;if(!lap||typeof lap!=='object')throw new Error(`履歴${index+1}のラップ情報が不正です。`);for(const key of ['inputTopMs','selfMs','effectiveTopMs'])if(!isPositiveSafeInteger(lap[key]))throw new Error(`履歴${index+1}の${key}が不正です。`);if(typeof lap.virtualTopEnabled!=='boolean')throw new Error(`履歴${index+1}の仮想TOP設定が不正です。`);if(!Number.isInteger(lap.virtualTopRatio)||lap.virtualTopRatio<0||lap.virtualTopRatio>10)throw new Error(`履歴${index+1}の仮想TOP比率が不正です。`);if(lap.virtualTopEnabled){if(!isPositiveSafeInteger(lap.virtualTopMs))throw new Error(`履歴${index+1}の仮想TOPタイムが不正です。`);}else if(lap.virtualTopMs!==null)throw new Error(`履歴${index+1}の仮想TOPタイムはnullである必要があります。`);for(const key of ['actualTopPercentage','effectiveTopPercentage'])if(!Number.isFinite(lap[key])||lap[key]<=0)throw new Error(`履歴${index+1}の${key}が不正です。`);if(record.percentageVisibility!=null&&typeof record.percentageVisibility!=='object')throw new Error(`履歴${index+1}の表示設定が不正です。`);const sectors=record.sectors==null?[]:record.sectors;if(!Array.isArray(sectors))throw new Error(`履歴${index+1}のセクター情報が不正です。`);return {...record,note:record.note||'',sectors:sectors.map(validateSector)};}
+function validateRecordArray(records,{allowEmpty=false}={}){if(!Array.isArray(records)||(!allowEmpty&&records.length===0))throw new Error('走行履歴が含まれていません。');const validated=records.map(validateRecord);const ids=new Set();for(const record of validated){if(ids.has(record.id))throw new Error(`JSON内でIDが重複しています: ${record.id}`);ids.add(record.id);}return validated;}
+function validateImportedData(data){if(!data||data.schemaVersion!==1||!Array.isArray(data.records))throw new Error('対応するJSON形式ではありません。');return validateRecordArray(data.records);}
+document.getElementById('exportJsonButton').addEventListener('click',()=>{const payload={schemaVersion:1,application:'Time Ratio Monitor',exportedAt:new Date().toISOString(),records:runHistory};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');const stamp=new Date().toISOString().replace(/[-:T]/g,'').slice(0,14);a.href=url;a.download=`TimeRatioMonitor_${stamp}.json`;a.click();URL.revokeObjectURL(url);historyDirty=false;updateHistoryStatus();});
+document.getElementById('importJsonButton').addEventListener('click',async()=>{const file=importJsonInput.files[0];if(!file){importStatus.textContent='JSONファイルを選択してください。';return;}try{const records=validateImportedData(JSON.parse(await file.text()));if(importMode.value==='replace'&&!await requestConfirmation('現在の履歴を読み込んだJSONで置換しますか？'))return;const previous=[...runHistory];let skipped=0;if(importMode.value==='replace')runHistory=records;else{const ids=new Set(runHistory.map(r=>r.id));const additions=records.filter(r=>{if(ids.has(r.id)){skipped++;return false;}ids.add(r.id);return true;});runHistory.push(...additions);}const saved=saveHistory();if(!saved.success){runHistory=previous;importStatus.textContent=`読み込みエラー: ${saved.message}`;return;}renderHistory();importStatus.textContent=`${records.length}件を検証し、${records.length-skipped}件を読み込みました。重複スキップ: ${skipped}件。`;}catch(error){importStatus.textContent=`読み込みエラー: ${error.message}`;}});
+document.getElementById('clearHistoryButton').addEventListener('click',async()=>{if(await requestConfirmation('保存されている走行履歴をすべて削除しますか？')){const previous=[...runHistory];runHistory=[];const saved=saveHistory();if(!saved.success){runHistory=previous;document.getElementById('storageStatus').textContent=saved.message;document.getElementById('storageStatus').className='status-line dirty';return;}renderHistory();}});
+const README_TEXT=`Time Ratio Monitor README
+Version ${APP_VERSION}
+
+1. アプリ概要
+TOPタイムを100%として自己タイムを比較し、仮想TOP評価、セクター分析、走行履歴、推移グラフ、JSONバックアップを行うオフラインHTMLアプリです。
+
+2. 基本操作
+1) 走行日と走行場所を入力
+2) TOPタイムと自己タイムを入力
+3) 必要に応じて仮想TOPと表示百分率を設定
+4) セクターを追加してタイムを入力
+5) 走行データを履歴へ登録
+
+3. タイム入力
+1～3桁はミリ秒、4桁はSmmm、5桁はSSmmm、6桁はMSSmmm、7桁はMMSSmmmとして解釈します。
+例: 1→0'00.001 / 12→0'00.012 / 123→0'00.123 / 1234→0'01.234 / 90123→1'30.123 / 130123→1'30.123 / 1030123→10'30.123
+通常形式: 90.123 / 1'30.123 / 1:30.123
+
+4. 計算式
+自己タイム百分率 = 自己タイム ÷ 有効TOPタイム × 100
+基準タイム = 有効TOPタイム × 百分率 ÷ 100
+タイム差 = 自己タイム − 基準タイム
+仮想TOP = 入力TOP × (100 − 選択比率) ÷ 100
+
+5. 色
+緑: 基準より速い
+橙: 基準より遅い
+白／グレー: 同タイム
+
+6. セクター
+自動名は表示順に再採番します。ユーザーが編集した名称は保持します。空欄でフォーカスを外すと自動名へ戻ります。
+
+7. 履歴・グラフ
+走行日を横軸、百分率を縦軸に表示します。同じ走行場所のデータだけを線で接続します。実TOP比率と有効TOP比率を切り替えられます。
+
+8. JSON
+JSON保存で全履歴をバックアップします。読み込みは追加または置換を選択できます。読み込みデータは日付、日時、タイム、百分率、セクター、ID重複を検証します。履歴はブラウザ内にも自動保存され、保存失敗時は画面に通知します。
+
+9. 更新履歴
+Version 1.0: Time Ratio Monitor公開
+`;
+function downloadTextFile(fileName,text){const blob=new Blob([text],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=fileName;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),0);}
+function downloadReadme(){downloadTextFile('README_TimeRatioMonitor.txt',README_TEXT);}
+document.getElementById('helpButton').addEventListener('click',()=>switchTab('help'));
+document.getElementById('helpBackButton').addEventListener('click',()=>switchTab('compare'));
+document.getElementById('downloadReadmeButton').addEventListener('click',downloadReadme);
+document.getElementById('helpDownloadReadmeButton').addEventListener('click',downloadReadme);
+
+loadHistory();updateLocationOptions();
+
+// 1～7桁連続数字の入力解析を起動時に自己検証する。
+function runTimeParsingSelfTests(){
+ const testCases=[
+  {input:'1',expected:"0'00.001"},
+  {input:'12',expected:"0'00.012"},
+  {input:'123',expected:"0'00.123"},
+  {input:'1234',expected:"0'01.234"},
+  {input:'90123',expected:"1'30.123"},
+  {input:'71111',expected:"1'11.111"},
+  {input:'059999',expected:"0'59.999"},
+  {input:'130123',expected:"1'30.123"},
+  {input:'930123',expected:"9'30.123"},
+  {input:'1030123',expected:"10'30.123"},
+  {input:'1259999',expected:"12'59.999"},
+  {input:'160000',expected:null},
+  {input:'1060000',expected:null}
+ ];
+ console.group('1～7桁タイム解析テスト');
+ testCases.forEach(({input,expected})=>{
+  const parsed=parseTimeToMilliseconds(input);
+  const actual=parsed.valid?formatMilliseconds(parsed.milliseconds):null;
+  console.assert(actual===expected,`${input}: expected=${expected}, actual=${actual}`);
+  if(actual===expected)console.log(`PASS ${input} → ${actual===null?'入力エラー':actual}`);
+ });
+ console.groupEnd();
+}
+function runVirtualTopSelfTests(){
+ const cases=[
+  {top:90000,ratio:0,expected:90000},
+  {top:90000,ratio:5,expected:85500},
+  {top:90000,ratio:10,expected:81000},
+  {top:90123,ratio:3,expected:87419}
+ ];
+ console.group('仮想TOPタイム計算テスト');
+ const previousMode=virtualTopMode.checked,previousRatio=virtualTopRatio.value;
+ virtualTopMode.checked=true;
+ cases.forEach(({top,ratio,expected})=>{virtualTopRatio.value=String(ratio);const actual=calculateVirtualTopTime(top);console.assert(actual===expected,`top=${top}, ratio=${ratio}: expected=${expected}, actual=${actual}`);if(actual===expected)console.log(`PASS ${formatMilliseconds(top)} / ${ratio}% → ${formatMilliseconds(actual)}`);});
+ virtualTopMode.checked=previousMode;virtualTopRatio.value=previousRatio;
+ console.groupEnd();
+}
+runTimeParsingSelfTests();
+runVirtualTopSelfTests();
+updateMainResults();
+</script>
+</body>
+</html>
